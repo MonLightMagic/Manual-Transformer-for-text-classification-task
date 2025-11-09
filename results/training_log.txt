@@ -1,0 +1,67 @@
+Using device: cuda
+CONFIG: d_model=64, n_layers=6, n_heads=8
+Dataset: glue (sst2)
+Loading data...
+Train dataset size: 67349
+Validation dataset size: 872
+Test dataset size: 1821
+Initializing model...
+Model parameters: 2,451,714
+Starting training from epoch 1
+
+Epoch 1/10
+Epoch time: 23.50s
+Train Loss: 0.7528, Train Acc: 0.5875
+Val Loss: 0.4782, Val Acc: 0.7638
+New best model saved!
+
+Epoch 2/10
+Epoch time: 22.13s
+Train Loss: 0.3529, Train Acc: 0.8513
+Val Loss: 0.4746, Val Acc: 0.8028
+New best model saved!
+
+Epoch 3/10
+Epoch time: 22.58s
+Train Loss: 0.2520, Train Acc: 0.9009
+Val Loss: 0.4779, Val Acc: 0.8142
+
+Epoch 4/10
+Epoch time: 22.54s
+Train Loss: 0.2160, Train Acc: 0.9149
+Val Loss: 0.5550, Val Acc: 0.8073
+
+Epoch 5/10
+Epoch time: 22.25s
+Train Loss: 0.1935, Train Acc: 0.9249
+Val Loss: 0.7119, Val Acc: 0.8073
+
+Epoch 6/10
+Epoch time: 22.26s
+Train Loss: 0.1794, Train Acc: 0.9287
+Val Loss: 0.7418, Val Acc: 0.8096
+
+Epoch 7/10
+Epoch time: 17.83s
+Train Loss: 0.1675, Train Acc: 0.9341
+Val Loss: 0.7391, Val Acc: 0.8039
+
+Epoch 8/10
+Epoch time: 17.70s
+Train Loss: 0.1592, Train Acc: 0.9365
+Val Loss: 0.8224, Val Acc: 0.8073
+
+Epoch 9/10
+Epoch time: 17.67s
+Train Loss: 0.1530, Train Acc: 0.9387
+Val Loss: 0.8495, Val Acc: 0.8039
+
+Epoch 10/10
+Epoch time: 17.85s
+Train Loss: 0.1467, Train Acc: 0.9408
+Val Loss: 0.8713, Val Acc: 0.8050
+
+Training completed!
+Best validation loss: 0.4746
+Final training accuracy: 0.9408
+Final validation accuracy: 0.8050
