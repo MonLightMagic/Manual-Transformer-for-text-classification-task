@@ -120,3 +120,77 @@ class EncoderLayer(nn.Module):
         x = self.norm2(x)
         
         return x
+
+
+class DecoderLayer(nn.Module):
+    """
+    实现单个 Decoder 层
+    采用 Post-Norm 结构: x + Sublayer(x) -> LayerNorm
+    支持自回归掩码和编码器-解码器注意力
+    """
+    def __init__(self, d_model: int, n_heads: int, d_ff: int, dropout: float = 0.1, use_relative_pos: bool = False):
+        super().__init__()
+        # 自注意力机制 (带掩码)
+        self.self_attn = MultiHeadAttention(d_model, n_heads, dropout, use_relative_pos)
+        # 编码器-解码器注意力机制
+        self.cross_attn = MultiHeadAttention(d_model, n_heads, dropout, use_relative_pos)
+        self.ffn = PositionwiseFeedForward(d_model, d_ff, dropout)
+        
+        # Add & Norm 1 (自注意力)
+        self.norm1 = nn.LayerNorm(d_model)
+        self.dropout1 = nn.Dropout(dropout)
+        
+        # Add & Norm 2 (编码器-解码器注意力)
+        self.norm2 = nn.LayerNorm(d_model)
+        self.dropout2 = nn.Dropout(dropout)
+        
+        # Add & Norm 3 (前馈网络)
+        self.norm3 = nn.LayerNorm(d_model)
+        self.dropout3 = nn.Dropout(dropout)
+
+    def forward(self, 
+                x: torch.Tensor, 
+                enc_output: torch.Tensor, 
+                src_mask: torch.Tensor = None, 
+                tgt_mask: torch.Tensor = None) -> torch.Tensor:
+        """
+        Args:
+            x: 解码器输入 (B, L_tgt, d_model)
+            enc_output: 编码器输出 (B, L_src, d_model)
+            src_mask: 源序列掩码 (B, 1, 1, L_src)
+            tgt_mask: 目标序列掩码 (B, 1, L_tgt, L_tgt)
+        """
+        # 1. 掩码自注意力 (Sublayer 1)
+        _x = x
+        attn_output = self.self_attn(Q=x, K=x, V=x, mask=tgt_mask)
+        
+        # 2. Add & Norm 1
+        if config.USE_RESIDUALS:
+            x = _x + self.dropout1(attn_output)
+        else:
+            x = self.dropout1(attn_output)
+        x = self.norm1(x)
+        
+        # 3. 编码器-解码器交叉注意力 (Sublayer 2)
+        _x = x
+        cross_attn_output = self.cross_attn(Q=x, K=enc_output, V=enc_output, mask=src_mask)
+        
+        # 4. Add & Norm 2
+        if config.USE_RESIDUALS:
+            x = _x + self.dropout2(cross_attn_output)
+        else:
+            x = self.dropout2(cross_attn_output)
+        x = self.norm2(x)
+        
+        # 5. 前馈网络 (Sublayer 3)
+        _x = x
+        ffn_output = self.ffn(x)
+        
+        # 6. Add & Norm 3
+        if config.USE_RESIDUALS:
+            x = _x + self.dropout3(ffn_output)
+        else:
+            x = self.dropout3(ffn_output)
+        x = self.norm3(x)
+        
+        return x

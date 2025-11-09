@@ -11,12 +11,12 @@ DATASET_CONFIG = "sst2"  # 情感分析数据集，规模较小
 SOURCE_COL = 'sentence'
 TARGET_COL = 'label'
 # 使用本地部署的分词器 - 修改为绝对路径以确保正确加载
-TOKENIZER_NAME = "/data/wzy/zy/distilbert-base-uncased"
+TOKENIZER_NAME = "../distilbert-base-uncased"
 
 # --- 模型超参数 (更小型) ---# 确保 d_model % n_heads == 0
 D_MODEL = 64
 N_LAYERS = 8  # Encoder 层数减少
-N_HEADS = 16   # 注意力头数修改为8，确保64能被8整除
+N_HEADS = 16  
 D_K = D_MODEL // N_HEADS
 D_V = D_MODEL // N_HEADS
 D_FF = 512    # 前馈网络维度减小
@@ -42,7 +42,7 @@ import os
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 
 # --- 实验配置 ---
-EXPERIMENT_ID = "layers_8_heads_16_20251107_094405"  # 实验ID，用于区分不同实验结果
+EXPERIMENT_ID = "layers_8_heads_16_encoder_decoder"  # 实验ID，用于区分不同实验结果
 
 # --- 文件路径 ---
 # 根据实验ID生成不同的保存路径
@@ -53,5 +53,7 @@ LOG_FILE_PATH = os.path.join(BASE_DIR, f'../results/training_log_{EXPERIMENT_ID}
 
 # --- 实验控制开关 ---
 USE_POSITIONAL_ENCODING = True
-USE_RELATIVE_POSITION_ENCODING = USE_RELATIVE_POSITION_ENCODING = USE_RELATIVE_POSITION_ENCODING = USE_RELATIVE_POSITION_ENCODING = USE_RELATIVE_POSITION_ENCODING = USE_RELATIVE_POSITION_ENCODING = False  # 是否使用相对位置编码（设为True时忽略USE_POSITIONAL_ENCODING）
+USE_RELATIVE_POSITION_ENCODING  = False  # 是否使用相对位置编码（设为True时忽略USE_POSITIONAL_ENCODING）
 USE_RESIDUALS = True
+USE_DECODER = True  # 是否使用解码器架构
+N_DECODER_LAYERS = 4  # 解码器层数，None表示与编码器相同
