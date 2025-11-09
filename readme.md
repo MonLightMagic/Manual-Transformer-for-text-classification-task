@@ -1,4 +1,4 @@
-# 小型文本建模框架 (Small Text Modeling Framework)
+# 小型文本建模框架 
 
 ## 项目简介
 
@@ -6,7 +6,7 @@
 
 - 基于Transformer架构的文本分类模型
 - 支持标准绝对位置编码
-- 实现Shaw等人提出的相对位置编码
+- 实现了相对位置编码
 - 灵活的模型配置（编码器层数、注意力头数等）
 - 自动化对比实验脚本
 - 详细的训练日志和性能可视化
@@ -14,7 +14,7 @@
 ## 项目结构
 
 ```
-small_text_modeling/
+Manual-Transformer-for-text-classification-task/
 ├── glue_data/          # 数据集目录（SST2情感分析数据集）
 │   ├── sst2_test.json
 │   ├── sst2_train.json
@@ -60,22 +60,14 @@ small_text_modeling/
 
 ## 安装说明
 
-### 1. 克隆项目（如果适用）
+
+### 安装依赖
 
 ```bash
-# 进入工作目录
-cd /data/wzy/zy/
-# 项目已在small_text_modeling目录下
-```
-
-### 2. 安装依赖
-
-```bash
-cd small_text_modeling
 pip install -r requirements.txt
 ```
 
-### 3. 准备数据集
+### 准备数据集
 
 确保`glue_data`目录下包含SST2数据集文件：
 - sst2_train.json
@@ -90,7 +82,7 @@ pip install -r requirements.txt
 
 ```bash
 cd src
-python train.py
+./scripts/run.sh
 ```
 
 ### 2. 运行对比实验
@@ -98,8 +90,7 @@ python train.py
 使用实验脚本进行多种配置的对比实验：
 
 ```bash
-cd scripts
-python run_experiments.py
+python scripts/run_experiments.py
 ```
 
 运行后会显示以下选项：
@@ -120,13 +111,13 @@ python run_experiments.py
 ```python
 # 模型参数
 D_MODEL = 64
-N_LAYERS = 6
-N_HEADS = 8
+N_LAYERS = 8
+N_HEADS = 16
 
 # 实验配置
 EXPERIMENT_ID = 'custom_exp'
 USE_POSITIONAL_ENCODING = True
-USE_RELATIVE_POSITION_ENCODING = False  # 设为True时忽略USE_POSITIONAL_ENCODING
+USE_RELATIVE_POSITION_ENCODING = False 
 USE_RESIDUALS = True
 ```
 
@@ -139,42 +130,3 @@ USE_RESIDUALS = True
 - **损失曲线**：`results/loss_curve_[实验ID].png`
 - **准确率曲线**：`results/accuracy_curve_[实验ID].png`
 
-## 核心实现说明
-
-### 相对位置编码
-
-相对位置编码实现在`src/modules.py`中的`RelativePositionEmbedding`类：
-
-- 预计算相对位置嵌入向量
-- 生成相对位置索引矩阵
-- 在注意力计算中融合相对位置信息
-
-### 注意力机制
-
-增强的注意力计算实现在`scaled_dot_product_attention`函数中，支持传入`relative_pos_embedding`参数。
-
-## 常见问题
-
-### 1. 导入错误
-
-项目已通过自动路径设置解决导入问题，确保可以从任何目录正确运行。
-
-### 2. 实验配置冲突
-
-当`USE_RELATIVE_POSITION_ENCODING = True`时，会自动忽略`USE_POSITIONAL_ENCODING`设置。
-
-### 3. D_MODEL必须能被N_HEADS整除
-
-确保配置的模型维度（D_MODEL）能被注意力头数（N_HEADS）整除，否则会导致维度不匹配错误。
-
-## 技术栈
-
-- Python 3
-- PyTorch
-- Transformers (Hugging Face)
-- NumPy
-- Matplotlib (用于可视化)
-
-## 许可证
-
-[MIT License]
